@@ -1,0 +1,66 @@
+package com.everychecking.model.data;
+
+// 검사 결과의 모델
+public class Result {
+	// Properties ..
+	private int no;
+	private User user;
+	private VisualAcuity visualAcuity;
+	private boolean isColorBlindness;
+	private int audioFrequency;
+	private boolean isDysacousis;
+	
+	// Constructors ..
+	public Result (int no, User user, double visualAcuityLeft, double visualAcuityRight, boolean isColorBlindness, int audioFrequency, boolean isDysacousis) {
+		this(no, user, new VisualAcuity(visualAcuityLeft, visualAcuityRight), isColorBlindness, audioFrequency, isDysacousis);
+	}
+	
+	public Result (int no, User user, VisualAcuity visualAcuity, boolean isColorBlindness, int audioFrequency, boolean isDysacousis) {
+		this.no = no;
+		this.user = user;
+		this.visualAcuity = visualAcuity;
+		this.isColorBlindness = isColorBlindness;
+		this.audioFrequency = audioFrequency;
+		this.isDysacousis = isDysacousis;
+	}
+	
+	// Getters ..
+	public int getNo() {
+		return no;
+	}
+	public User getUser() {
+		return user;
+	}
+	public VisualAcuity getVisualAcuity() {
+		return visualAcuity;
+	}
+	public boolean isColorBlindness() {
+		return isColorBlindness;
+	}
+	public int getAudioFrequency() {
+		return audioFrequency;
+	}
+	public boolean isDysacousis() {
+		return isDysacousis;
+	}
+	
+	// Setters ..
+	public void setNo(int no) {
+		this.no = no;
+	}
+	public void setUser(User user) {
+		this.user = user;
+	}
+	public void setVisualAcuity(VisualAcuity visualAcuity) {
+		this.visualAcuity = visualAcuity;
+	}
+	public void setIsColorBlindness(boolean isColorBlindness) {
+		this.isColorBlindness = isColorBlindness;
+	}
+	public void setAudioFrequency(int audioFrequency) {
+		this.audioFrequency = audioFrequency;
+	}
+	public void setDysacousis(boolean isDysacousis) {
+		this.isDysacousis = isDysacousis;
+	}
+}
