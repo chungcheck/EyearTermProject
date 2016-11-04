@@ -1,0 +1,124 @@
+package com.everychecking.database;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+
+import com.everychecking.model.data.User;
+
+
+
+
+public class Database {
+	// Properties ..
+	private static Connection connection = null;
+	private static String url = "jdbc:mysql://localhost:3306/everychecking?useSSL=false";
+	private static String id = "root";
+	private static String pw = "hangolepassword";
+	
+	private static Statement statement = null;
+	
+	private static User userSession = null;
+
+	
+	public static void initializing () {
+		// 데이터베이스와 연결되지 않았다면
+		if (connection == null) {
+			try {
+				
+				Class.forName("com.mysql.jdbc.Driver");
+				// Mysql 과 연결한다.
+				connection = DriverManager.getConnection(url, id, pw);
+				System.out.println("Database was initialize Successfully.");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		try {
+			
+			statement = connection.createStatement();
+			System.out.println("Database was initialize Successfully.");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static Statement getStatement () {
+		
+		if ( statement == null ) {
+			initializing();
+		}
+		return statement;
+	}
+	
+	public static void createSession(int no) {
+		
+		String query = "select * from users where no=" + no;
+		
+		try {
+			ResultSet resultSet = getStatement().executeQuery(query);
+			
+			if (resultSet.next()) {
+				if (userSession != null) {
+					System.out.println("현재 session을 제거합니다.");
+				}
+				
+				// 세선을 생성한다.
+				userSession = new User(resultSet.getInt(1), resultSet.getString(2), resultSet.getInt(3));
+			} else {
+				
+				try {
+					throw new Exception("User." + no + " doesn't exist");
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void createSession(String name, int age) {
+		// DB 에 user 를 insert 한다.
+		String query = "insert into users (name, age) values ( '" + name + "',  " + age + " );";
+		
+		try {
+			getStatement().execute(query);
+			
+			if (userSession != null) {
+				System.out.println("현재 session을 제거합니다.");
+			}
+			
+			// 세션을 생성한다.
+			userSession = new User(name, age);
+
+			System.out.println("User(" + name + ", " + age + ") 가 생성되었습니다.");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static ArrayList<User> getUserList() {
+		// 반환할 user 리스트
+		ArrayList<User> userList = new ArrayList<User>();
+		
+		// users 의 모든 요소를 가져온다.
+		String query = "select * from users";
+		
+		try {
+			ResultSet resultSet = getStatement().executeQuery(query);
+			
+			// 모든 요소를 리스트에 추가한다.
+			while (resultSet.next()) {
+				userList.add(new User(resultSet.getInt(1), resultSet.getString(2), resultSet.getInt(3)));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return userList;
+	}
+}
